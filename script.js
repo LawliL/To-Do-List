@@ -1,51 +1,46 @@
 "use strict";
-var text = document.getElementById("ftext");
-var listContainer = document.getElementById("list-container");
 
+const textInput = document.getElementById("ftext");
+const listContainer = document.getElementById("list-container");
 
-function addtask(){
+function addTask() {
+    if (textInput.value.trim() === "") {
+        window.alert("Você não digitou nada");
+        return;
+    } 
     
-    if(text.value == ""){
-        window.alert("Você não digitou nada")
-
-    }else{
-       var listItem = document.createElement("li");
-       listItem.innerHTML = text.value;
-       listContainer.appendChild(listItem);
-       var span = document.createElement("span");
-       span.innerHTML = "\u00d7";
-       listItem.appendChild(span)
-      
-    }
-    text.value = " ";
-
+    const listItem = document.createElement("li");
+    listItem.textContent = textInput.value;
     
-
-}
-
-listContainer.addEventListener("click",function(e){
-   
-    if(e.target.tagName == "LI"){
-        e.target.classList.toggle("checked");
-        saveData();
-
-    }else if(e.target.tagName == "SPAN"){
-        e.target.parentElement.remove();
-        saveData();
-    }
-
+    const deleteButton = document.createElement("span");
+    deleteButton.textContent = "\u00D7";
+    listItem.appendChild(deleteButton);
+    
+    listContainer.appendChild(listItem);
     saveData();
-
-
-},false);
-
-function saveData(){
-    localStorage.setItem("data",listContainer.innerHTML);
+    
+    textInput.value = "";
 }
 
-function showtask(){
-    listContainer.innerHTML = localStorage.getItem("data");
+
+listContainer.addEventListener("click", function(e) {
+    if (e.target.tagName === "LI") {
+        e.target.classList.toggle("checked");
+    } else if (e.target.tagName === "SPAN") {
+        e.target.parentElement.remove();
+    }
+    saveData();
+}, false);
+
+function saveData() {
+    localStorage.setItem("data", listContainer.innerHTML);
 }
 
-showtask();
+function loadTasks() {
+    const storedData = localStorage.getItem("data");
+    if (storedData) {
+        listContainer.innerHTML = storedData;
+    }
+}
 
+loadTasks();
